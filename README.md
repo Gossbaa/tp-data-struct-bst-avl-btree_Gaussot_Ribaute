@@ -32,7 +32,7 @@ Cette construction présente de fortes limites pour l'ajout ou la suppression de
 De plus, l'arbre étant statique, il est très difficile de le faire grandir ou de le modifier pendant que le programme tourne. Concernant la compatibilité avec malloc et free, elle est totalement inexistante. La commande free ne doit être utilisée que sur de la mémoire créée dynamiquement avec malloc. 
 Faire un free sur cet arbre codé en dur fera planter le programme, et le fait de mélanger des nœuds statiques et dynamiques rendrait de toute façon le nettoyage de la mémoire impossible à gérer correctement.
 
- 
+2. code 
 ```
 #include <stdio.h>
 
@@ -70,3 +70,8 @@ int main(void) {
 
     return 0;
 ```
+
+3. Est-ce un BST en supposant l’ordre alphabétique ?
+
+Oui, cet arbre est bien un Arbre Binaire de Recherche (BST). Dans un BST, pour chaque nœud, toutes les valeurs situées dans le sous-arbre gauche doivent être strictement plus petites, et celles du sous-arbre droit strictement plus grandes.
+En se basant sur l'ordre alphabétique des codes ASCII, cette règle est respectée à chaque niveau de la structure.
