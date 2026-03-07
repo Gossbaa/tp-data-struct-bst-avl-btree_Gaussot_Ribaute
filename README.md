@@ -32,8 +32,8 @@ Cette construction présente de fortes limites pour l'ajout ou la suppression de
 De plus, l'arbre étant statique, il est très difficile de le faire grandir ou de le modifier pendant que le programme tourne. Concernant la compatibilité avec malloc et free, elle est totalement inexistante. La commande free ne doit être utilisée que sur de la mémoire créée dynamiquement avec malloc. 
 Faire un free sur cet arbre codé en dur fera planter le programme, et le fait de mélanger des nœuds statiques et dynamiques rendrait de toute façon le nettoyage de la mémoire impossible à gérer correctement.
 
-` 
-#include <stdio.h>
+ 
+` #include <stdio.h>
 
 struct tree_node {
   int data;
