@@ -415,3 +415,27 @@ Le phénomène inverse se produit. L'arbre se vide par la gauche et devient asym
 Intérêt de la randomisation :
 La suppression asymétrique classique (algorithme de Hibbard, qui utilise toujours le successeur) est connue pour dégrader progressivement la structure de l'arbre au fil de nombreuses insertions et suppressions. La hauteur de l'arbre tend à s'allonger vers $O(\sqrt{n})$ au lieu de rester proche de $O(\log n)$.
 En choisissant aléatoirement entre le successeur et le prédécesseur, on répartit les réaménagements structurels des deux côtés. Cela empêche l'arbre de pencher systématiquement d'un côté et permet de conserver statistiquement une forme globale beaucoup mieux équilibrée.
+
+
+# Arbres AVL
+
+## Questions
+
+1. Non les deux arbres ne satisfont pas la condition AVL car  la difference de hauteur entre le sous arbre de gauche et le sous arbre de droit  pour  certains  noeuds est superieur a 1. Par exemple, pour les deux arbres, il y a un probleme au niveau du noeud 25 avec  des differences de hauteur respectivement de 2 et 3.
+
+3. Pour respecter la condition AVL des noeuds pour un arbre de hauteur h, les sous arbres doivent avoir  des hauteurs de h-1 et h-2.
+Le nombre total de nœuds est donc : N(h)=1+N(h−1)+N(h−2).
+On sait que N(h−1)>N(h−2) car la fonction est croissante.
+On peut donc ecrire que : N(h)>2⋅N(h−2) et on peut arrriver a N(h)>2h/2.
+Pour un arbre AVL  contenant n nœuds, on a  n≥N(h)>2h/2.
+
+En appliquant la fonction log en base 2, cela devient log2​(n)>2h​.
+
+On obtient h<2⋅log2​(n), ce qui prouve mathématiquement que la hauteur est en Olog​(n).
+
+4. Comme explique precedemment il s agit de la fonction log en base 2.
+
+5. Cette distinction n'affecte pas la classe de complexite car la notation O ignore les constantes multiplicative et que l on passe de  log base 2 a log base 10 par une constante  multiplicative.
+
+
+## Rotations
