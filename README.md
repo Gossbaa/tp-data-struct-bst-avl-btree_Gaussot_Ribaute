@@ -344,4 +344,74 @@ La suppression dans un Arbre Binaire de Recherche n'est généralement pas commu
 
 Si vous supprimez un nœud $X$ qui a deux enfants, il est remplacé par son successeur $Y$. Si vous aviez supprimé $Y$ en premier, le successeur de $X$ aurait été un autre nœud $Z$. La topologie de l'arbre (qui est le parent de qui, et la hauteur des branches) dépend donc fortement de l'ordre d'exécution des suppressions.
 
+## Variante de tree_delete avec prédécesseur
 
+1. Variante avec le prédécesseur
+
+
+```c
+struct tree_node *tree_maximum(struct tree_node *node) {
+    while (node->right != NULL) node = node->right;
+    return node;
+}
+
+// Dans tree_delete, on remplace le cas à 2 enfants par ceci :
+} else { 
+    struct tree_node *y = tree_maximum(z->left); // Prédécesseur
+    if (y->parent != z) {
+        transplant(root, y, y->left);
+        y->left = z->left;
+        y->left->parent = y;
+    }
+    transplant(root, z, y);
+    y->right = z->right;
+    y->right->parent = y;
+}
+
+```
+
+
+2. Comparaison des suppressions successives
+
+En partant du BST de référence initial, on supprime 25, puis 20, puis 10.
+
+Avec le successeur :
+
+* 25 est remplacé par 30.
+* 20 est remplacé par 22.
+* 10 est remplacé par 12.
+L'arbre a tendance à se "vider" par la droite. Les éléments du sous-arbre droit remontent continuellement, ce qui crée un déséquilibre visuel : l'arbre devient plus lourd et plus profond sur son flanc gauche.
+
+Avec le prédécesseur :
+
+* 25 est remplacé par 24.
+* 20 est remplacé par 17.
+* 10 est remplacé par 2.
+Le phénomène inverse se produit. L'arbre se vide par la gauche et devient asymétrique en s'allongeant vers la droite (surtout visible avec la racine 10 remplacée par 2, qui n'a pas d'enfant gauche).
+
+---
+
+3. Suppression aléatoire
+
+```c
+#include <stdlib.h> // Pour rand()
+
+// Dans tree_delete, cas à 2 enfants :
+} else {
+    struct tree_node *y;
+    if (rand() % 2 == 0) {
+        // Logique du successeur (minimum à droite)
+        y = tree_minimum(z->right);
+        // ... (code de transplantation du successeur)
+    } else {
+        // Logique du prédécesseur (maximum à gauche)
+        y = tree_maximum(z->left);
+        // ... (code de transplantation du prédécesseur)
+    }
+}
+
+```
+
+Intérêt de la randomisation :
+La suppression asymétrique classique (algorithme de Hibbard, qui utilise toujours le successeur) est connue pour dégrader progressivement la structure de l'arbre au fil de nombreuses insertions et suppressions. La hauteur de l'arbre tend à s'allonger vers $O(\sqrt{n})$ au lieu de rester proche de $O(\log n)$.
+En choisissant aléatoirement entre le successeur et le prédécesseur, on répartit les réaménagements structurels des deux côtés. Cela empêche l'arbre de pencher systématiquement d'un côté et permet de conserver statistiquement une forme globale beaucoup mieux équilibrée.
