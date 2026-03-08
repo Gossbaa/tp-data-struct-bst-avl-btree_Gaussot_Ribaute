@@ -257,3 +257,27 @@ L'algorithme agit comme une machine à états grâce aux pointeurs `curr` et `pr
  Complexité spatiale : C'est ici que l'itératif gagne. La version récursive nécessite $O(h)$ d'espace en mémoire (où $h$ est la hauteur de l'arbre) à cause de la pile d'appels. Notre version itérative nécessite un espace de $O(1)$, car elle n'utilise que trois pointeurs locaux, quelle que soit la taille de l'arbre.
 
 
+
+## Mise en œuvre de tree_free 
+
+Pour libérer l'arbre correctement, il est impératif d'utiliser le parcours postfixe (postorder). Cela garantit que l'on détruit d'abord les enfants (gauche puis droite) avant de détruire le nœud parent, évitant ainsi d'accéder à des pointeurs de mémoire qui ont déjà été libérés.
+
+
+```c
+#include <stdlib.h>
+
+// 1. Le callback qui libère un nœud
+void free_node(struct tree_node *n) {
+    if (n) {
+        free(n);
+    }
+}
+
+// 2. La fonction principale
+void tree_free(struct tree_node *subroot) {
+    // On utilise la fonction postorder définie précédemment
+    postorder(subroot, free_node);
+}
+
+```
+
