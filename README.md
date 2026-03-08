@@ -280,4 +280,68 @@ void tree_free(struct tree_node *subroot) {
 }
 
 ```
+## Mettre en œuvre tree_delete
+
+1. Implémentation de tree_delete 
+
+
+```c
+struct tree_node *tree_minimum(struct tree_node *node) {
+    while (node->left != NULL) node = node->left;
+    return node;
+}
+
+void transplant(struct tree_node **root, struct tree_node *u, struct tree_node *v) {
+    if (u->parent == NULL) *root = v;
+    else if (u == u->parent->left) u->parent->left = v;
+    else u->parent->right = v;
+    if (v != NULL) v->parent = u->parent;
+}
+
+struct tree_node *tree_delete(struct tree_node **root, int key) {
+    // 1. Recherche du nœud
+    struct tree_node *z = *root;
+    while (z != NULL && z->data != key) {
+        if (key < z->data) z = z->left;
+        else z = z->right;
+    }
+    if (z == NULL) return NULL; 
+
+    // 2. Suppression selon les 3 cas
+    if (z->left == NULL) {
+        transplant(root, z, z->right);
+    } else if (z->right == NULL) { 
+        transplant(root, z, z->left);
+    } else { 
+        struct tree_node *y = tree_minimum(z->right); 
+        if (y->parent != z) {
+            transplant(root, y, y->right);
+            y->right = z->right;
+            y->right->parent = y;
+        }
+        transplant(root, z, y);
+        y->left = z->left;
+        y->left->parent = y;
+    }
+    
+    z->parent = z->left = z->right = NULL; 
+    return z; 
+}
+
+```
+
+2. Évolution de l'arbre après suppressions
+
+Après `tree_delete(&root, 24)` : voir dossier arbre
+
+
+Après `tree_delete(&root, 15)` : voir dossier arbre
+
+
+3. Commutativité de la suppression 
+
+La suppression dans un Arbre Binaire de Recherche n'est généralement pas commutative. L'ordre dans lequel on supprime les éléments modifie la structure finale de l'arbre.
+
+Si vous supprimez un nœud $X$ qui a deux enfants, il est remplacé par son successeur $Y$. Si vous aviez supprimé $Y$ en premier, le successeur de $X$ aurait été un autre nœud $Z$. La topologie de l'arbre (qui est le parent de qui, et la hauteur des branches) dépend donc fortement de l'ordre d'exécution des suppressions.
+
 
