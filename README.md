@@ -119,3 +119,82 @@ Résultat du parcours infixe sur l’arbre précédent
 
 Le parcours infixe d'un Arbre Binaire de Recherche explore toujours le sous-arbre gauche en premier, traite ensuite le nœud courant, et termine par le sous-arbre droit, ce qui a pour propriété fondamentale de restituer les valeurs dans leur ordre croissant naturel.
 En appliquant ce parcours à notre arbre précédent construit avec des lettres, on parcourt la structure de gauche à droite et cela donne tout simplement la séquence alphabétique parfaitement triée : A B C D E F G H I.
+
+## Transformer en allocation dynamique 
+
+1. Construction et dessin du BST
+
+En insérant la séquence (10, 2, 25, 15, 30, 12, 20, 16, 24, 17, 22) dans un arbre vide, on place chaque élément à gauche s'il est plus petit que le nœud courant, et à droite s'il est plus grand. L'arbre résultant peut être observée dans le dossier arbres adjoints sous le nom result_inser
+
+
+2. Résultat avec une séquence initiale triée
+
+Si la séquence initiale avait été triée, l'arbre résultant aurait été un arbre dit dégénéré (ou pathologique) ressemblant à une simple liste chaînée. Chaque nouveau nœud inséré étant strictement supérieur au précédent, il aurait été systématiquement placé comme enfant droit. La hauteur de l'arbre aurait alors été égale au nombre d'éléments insérés, ce qui est le pire cas possible, dégradant les performances des futures opérations de recherche qui passeraient d'une efficacité logarithmique à une efficacité linéaire.
+
+3. Fonction d'allocation node_new
+
+```c
+#include <stdlib.h>
+
+struct tree_node *node_new(int data) {
+    // Allocation sur le tas
+    struct tree_node *new_node = malloc(sizeof(struct tree_node));
+    
+    // Vérification que l'allocation a réussi
+    if (!new_node) {
+        return NULL; 
+    }
+    
+    // Initialisation des champs
+    new_node->data = data;
+    new_node->parent = NULL;
+    new_node->left = NULL;
+    new_node->right = NULL;
+    
+    return new_node;
+}
+
+```
+
+4. Fonction d'insertion bst_insert 
+
+```c
+struct tree_node *bst_insert(struct tree_node **root, int data) {
+    struct tree_node *new_node = node_new(data);
+    if (!new_node) return NULL; // Échec d'allocation
+
+    // Cas d'un arbre vide
+    if (*root == NULL) {
+        *root = new_node;
+        return new_node;
+    }
+
+    struct tree_node *current = *root;
+    struct tree_node *parent = NULL;
+
+    // Recherche de la position d'insertion
+    while (current != NULL) {
+        parent = current;
+        if (data < current->data) {
+            current = current->left;
+        } else if (data > current->data) {
+            current = current->right;
+        } else {
+            // Le nœud existe déjà (règle des BST stricts), on annule et on libère
+            free(new_node);
+            return current; 
+        }
+    }
+
+    // Liaison du nouveau nœud avec son parent
+    new_node->parent = parent;
+    if (data < parent->data) {
+        parent->left = new_node;
+    } else {
+        parent->right = new_node;
+    }
+
+    return new_node;
+}
+
+```
