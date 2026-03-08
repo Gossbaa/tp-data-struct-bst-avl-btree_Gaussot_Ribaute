@@ -439,3 +439,13 @@ On obtient h<2⋅log2​(n), ce qui prouve mathématiquement que la hauteur est 
 
 
 ## Rotations
+
+1. Soit FE le fqcteur d'equilibre d'un noeud.
+Precondition cas LL : FE(x)=2 et FE(x→left)≥0
+Precondition cas RR : FE(x)=−2 et FE(x→right)≤0
+Precondition cas LR : FE(x)=2 et FE(x→left)<0
+Precondition cas RL : FE(x)=−2 et FE(x→right)>0
+
+2. Lors d'une insertion, la hauteur d'un sous-arbre peut augmenter de 1. Si cette augmentation provoque un déséquilibre au niveau d'un nœud ancêtre x , on applique la rotation appropriée.
+Après cette rotation de rééquilibrage, la hauteur du sous-arbre  redevient exactement la même que ce qu'elle était avant l'insertion.
+Puisque la hauteur globale de ce sous-arbre n'a pas changé du point de vue des nœuds supérieurs, le déséquilibre ne peut pas se propager plus haut vers la racine. Donc, une seule opération de rééquilibrage  suffit. Le nombre de rotations est donc borné par une constante.
