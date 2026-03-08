@@ -198,3 +198,62 @@ struct tree_node *bst_insert(struct tree_node **root, int data) {
 }
 
 ```
+## Fonctions de traversée d’arbre itératives
+
+1. Version itérative de preorder
+
+```c
+void preorder_iterative(struct tree_node *root, process_fn process) {
+    struct tree_node *curr = root, *prev = NULL, *next = NULL;
+    while (curr) {
+        if (prev == curr->parent) { // On descend
+            process(curr);
+            next = curr->left ? curr->left : (curr->right ? curr->right : curr->parent);
+        } else if (prev == curr->left) { // On remonte de la gauche
+            next = curr->right ? curr->right : curr->parent;
+        } else { // On remonte de la droite
+            next = curr->parent;
+        }
+        prev = curr;
+        curr = next;
+    }
+}
+
+```
+
+---
+
+2. Version itérative de inorder 
+
+
+```c
+void inorder_iterative(struct tree_node *root, process_fn process) {
+    struct tree_node *curr = root, *prev = NULL, *next = NULL;
+    while (curr) {
+        if (prev == curr->parent) { // On descend
+            if (curr->left) next = curr->left;
+            else { process(curr); next = curr->right ? curr->right : curr->parent; }
+        } else if (prev == curr->left) { // On remonte de la gauche
+            process(curr);
+            next = curr->right ? curr->right : curr->parent;
+        } else { // On remonte de la droite
+            next = curr->parent;
+        }
+        prev = curr;
+        curr = next;
+    }
+}
+
+```
+
+3. Stratégie générale 
+
+L'algorithme agit comme une machine à états grâce aux pointeurs `curr` et `prev`. En comparant `prev` avec le parent ou les enfants de `curr`, on sait exactement dans quelle direction on voyage (descente, remontée par la gauche, remontée par la droite), ce qui permet de naviguer sans jamais utiliser de pile de mémorisation.
+
+
+4. Comparaison de la complexité 
+
+ Complexité temporelle : Identique. $O(n)$ dans les deux cas car on visite chaque lien un nombre constant de fois.
+ Complexité spatiale : C'est ici que l'itératif gagne. La version récursive nécessite $O(h)$ d'espace en mémoire (où $h$ est la hauteur de l'arbre) à cause de la pile d'appels. Notre version itérative nécessite un espace de $O(1)$, car elle n'utilise que trois pointeurs locaux, quelle que soit la taille de l'arbre.
+
+
