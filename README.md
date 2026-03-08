@@ -18,7 +18,70 @@ Si on inverse les opérations de push, on aura 1, 2, 3, 4, 5 si s se comporte co
 
 ## Evaluation d'expression
 
-//Arthur si tu peux faire ça
+1. Lecture d'un operande : On l'empile (push) directement sur la pile.
+
+*Lecture d'un opérateur (+, -, , /) :
+
+    On dépile (pop) la valeur au sommet de la pile. Elle devient l'opérande droit.
+
+    On dépile (pop) la nouvelle valeur au sommet. Elle devient l'opérande gauche.
+
+    On applique l'opérateur sur ces deux valeurs.
+
+    On empile (push) le résultat de cette opération sur la pile.
+
+ Il ne reste qu'une seule valeur dans la pile, qui est le résultat final de l'évaluation.
+
+ 2. Empile le nombre 3	[3]
+	Empile le nombre 4	[3, 4]
+	Dépile 4 (droit), dépile 3 (gauche), calcule 3 + 4 = 7, empile 7	[7]
+	Empile le nombre 2	[7, 2]
+	Dépile 2 (droit), dépile 7 (gauche), calcule 7 * 2 = 14, empile 14	[14]
+
+3. code 
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+int eval_postfix(const char *expr) {
+    int stack[100]; 
+    int top = -1;
+    const char *p = expr;
+
+    while (*p != '\0') {
+        // Ignorer les espaces
+        if (isspace(*p)) {
+            p++;
+            continue;
+        }
+
+        // Si c'est un chiffre, on lit le nombre entier et on l'empile
+        if (isdigit(*p)) {
+            int val = strtol(p, (char **)&p, 10);
+            stack[++top] = val; // push
+        } 
+        // Si c'est un opérateur
+        else {
+            int b = stack[top--]; 
+            int a = stack[top--]; 
+            
+            switch (*p) {
+                case '+': stack[++top] = a + b; break;
+                case '-': stack[++top] = a - b; break;
+                case '*': stack[++top] = a * b; break;
+                case '/': stack[++top] = a / b; break;
+            }
+            p++; 
+        }
+    }
+    
+    
+    return stack[top];
+}
+```
+
+4. La difference est dans la gestion de la memoire, la solution classique  en C a une complexite de O(1) tandis que la solution IA a une complexite spatiale de O(n).
 
 ## BST
 # Arbre
@@ -449,3 +512,10 @@ Precondition cas RL : FE(x)=−2 et FE(x→right)>0
 2. Lors d'une insertion, la hauteur d'un sous-arbre peut augmenter de 1. Si cette augmentation provoque un déséquilibre au niveau d'un nœud ancêtre x , on applique la rotation appropriée.
 Après cette rotation de rééquilibrage, la hauteur du sous-arbre  redevient exactement la même que ce qu'elle était avant l'insertion.
 Puisque la hauteur globale de ce sous-arbre n'a pas changé du point de vue des nœuds supérieurs, le déséquilibre ne peut pas se propager plus haut vers la racine. Donc, une seule opération de rééquilibrage  suffit. Le nombre de rotations est donc borné par une constante.
+
+# B-TREE
+## Construction
+
+
+
+## Nombre de cles et hauteur
